@@ -1,0 +1,92 @@
+
+// CTSPRO GLOBAL MASTER SECURITY RULES v3.2
+// HIERARCHY: FOUNDER > ENTREPRENEUR > DRIVER
+// ENFORCING INTERFACE PURITY & ANTI-FRAUD FIELD PROTECTION
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // MASTER IDENTIFICATION (Founder UID or Email check)
+    function isFounder() {
+      return request.auth != null && (
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'FOUNDER' ||
+        request.auth.token.email == 'admin@ctspro.com'
+      );
+    }
+
+    // CHECK IF USER IS APPROVED BY FOUNDER
+    function isApproved() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == 'APPROVED';
+    }
+
+    match /users/{userId} {
+      // VISIBILITY: Common users only see APPROVED profiles. Founder sees ALL.
+      allow read: if request.auth != null && (isFounder() || (resource.data.status == 'APPROVED' && isApproved()));
+      
+      // CREATION: Standard user can create their own initial profile.
+      allow create: if request.auth != null && request.auth.uid == userId;
+
+      // UPDATING: 
+      // 1. Founder can change anything.
+      // 2. Common users cannot change: role, status, cnh, cnpj, or createdAt.
+      allow update: if request.auth != null && (
+        isFounder() || (
+          request.auth.uid == userId &&
+          request.resource.data.role == resource.data.role &&
+          request.resource.data.status == resource.data.status &&
+          request.resource.data.cnh == resource.data.cnh &&
+          request.resource.data.cnpj == resource.data.cnpj &&
+          request.resource.data.createdAt == resource.data.createdAt
+        )
+      );
+
+      // DELETION: MASTER ONLY
+      allow delete: if isFounder();
+    }
+
+    match /trips/{tripId} {
+      // MONITORING: 
+      // - Founder: All.
+      // - Driver: Own.
+      // - Entrepreneur: Those from their specific company.
+      allow read: if request.auth != null && (
+        isFounder() || 
+        resource.data.driverUid == request.auth.uid || 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.companyName == resource.data.companyName
+      );
+      
+      // CREATION: Only approved drivers can log trips.
+      allow create: if request.auth != null && 
+                    request.resource.data.driverUid == request.auth.uid && 
+                    isApproved();
+                    
+      // ANTI-FRAUD: Trips cannot be modified by drivers after submission, only by Founder.
+      allow update, delete: if isFounder();
+    }
+    
+    match /rankings/{rankId} {
+      allow read: if true;
+      allow write: if isFounder();
+    }
+  }
+}
+
+// STORAGE RULES: PREVENTING OVERLOAD & SECURING DOCUMENTS
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /profiles/{userId}/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    match /trips/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.resource.size < 5 * 1024 * 1024; // Max 5MB per proof
+      allow delete: if request.auth != null && (
+        request.auth.token.email == 'admin@ctspro.com' ||
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'FOUNDER'
+      );
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "name": "CTSPRO - Gestão de Simuladores",
+  "description": "Sistema de gestão global para simuladores de caminhão e ônibus com ranking, crachás dinâmicos e controle de viagens em tempo real.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}

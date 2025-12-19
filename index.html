@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CTSPRO - Gestão Global</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Orbitron:wght@600;700;800;900&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --primary: #2563eb;
+        --primary-gradient: linear-gradient(90deg, #2563eb, #3b82f6);
+        --bg-deep: #020617;
+      }
+      body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: var(--bg-deep);
+        color: #f8fafc;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+      }
+      .font-gaming {
+        font-family: 'Orbitron', sans-serif;
+      }
+      .font-signature {
+        font-family: 'Dancing Script', cursive;
+      }
+      .glass {
+        background: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .bg-grid {
+        background-color: #020617;
+        background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1.5px, transparent 1.5px);
+        background-size: 30px 30px;
+      }
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #020617;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #1e293b;
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #334155;
+      }
+      
+      /* CNH Digital Brasileira Estilizada */
+      .cnh-digital {
+        background: #2d5a27;
+        color: #1a3a16;
+        font-family: sans-serif;
+        border: 1px solid #1a3a16;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      }
+      .cnh-field-label {
+        font-size: 6px;
+        font-weight: 900;
+        text-transform: uppercase;
+        color: #1a3a16;
+        opacity: 0.8;
+      }
+      .cnh-field-value {
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: #000;
+      }
+      .cnh-header {
+        background: #1a3a16;
+        color: #fff;
+        padding: 8px;
+        text-align: center;
+        border-radius: 4px 4px 0 0;
+      }
+      
+      /* Utilitários para prevenir quebra em mobile */
+      .text-responsive-title {
+        font-size: clamp(1.5rem, 5vw, 3.5rem);
+      }
+      .text-responsive-subtitle {
+        font-size: clamp(0.7rem, 2vw, 1rem);
+      }
+      
+      @media (max-width: 640px) {
+        .glass {
+          padding: 1.25rem !important;
+        }
+        .text-4xl { font-size: 1.5rem !important; }
+        .text-5xl { font-size: 1.875rem !important; }
+        .text-6xl { font-size: 2.25rem !important; }
+      }
+    </style>
+    <script type="importmap">
+    {
+      "imports": {
+        "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+        "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+        "react/": "https://esm.sh/react@^19.2.3/",
+        "react": "https://esm.sh/react@^19.2.3"
+      }
+    }
+    </script>
+  </head>
+  <body class="bg-grid">
+    <div id="root"></div>
+  </body>
+</html>
